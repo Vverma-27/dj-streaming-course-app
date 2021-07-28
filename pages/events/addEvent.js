@@ -1,5 +1,6 @@
+import Layout from "@/components/layout";
 const AddEvent = () => {
-  return <div>Event Add</div>;
+  return <Layout title="Add DJ Event">Event Add</Layout>;
 };
 
 export default AddEvent;

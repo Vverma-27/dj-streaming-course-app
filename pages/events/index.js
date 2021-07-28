@@ -1,8 +1,9 @@
+import Layout from "@/components/layout";
 const MyEvents = () => {
   return (
-    <div>
+    <Layout>
       <h1>My Events</h1>
-    </div>
+    </Layout>
   );
 };
 
