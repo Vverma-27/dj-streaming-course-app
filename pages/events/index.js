@@ -16,7 +16,7 @@ const MyEvents = ({ events }) => {
 export default MyEvents;
 
 export async function getStaticProps() {
-  const response = await config.get("/api/events");
+  const response = await config.get("/events?_sort=date:ASC");
   return {
     props: {
       events: response.data,

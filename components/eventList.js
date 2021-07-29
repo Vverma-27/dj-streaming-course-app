@@ -7,14 +7,16 @@ const EventList = ({ events }) => {
       <section key={event.id} className={styles.event}>
         <section className={styles.img}>
           <Image
-            src={event.image || "/images/event-default.png"}
+            src={
+              event.image.formats.thumbnail.url || "/images/event-default.png"
+            }
             width={170}
             height={100}
           />
         </section>
         <section className={styles.info}>
           <span>
-            {event.date} at {event.time}
+            {new Date(event.date).toLocaleDateString("hi")} at {event.time}
           </span>
           <h3>{event.name}</h3>
         </section>

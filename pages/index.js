@@ -20,10 +20,10 @@ const HomePage = ({ events }) => {
 export default HomePage;
 
 export async function getStaticProps() {
-  const response = await config.get("/api/events");
+  const response = await config.get("/events?_sort=date:ASC&_limit=3");
   return {
     props: {
-      events: response.data.slice(0, 3),
+      events: response.data,
       revalidate: 1,
     },
   };

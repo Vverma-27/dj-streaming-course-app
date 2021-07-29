@@ -25,10 +25,16 @@ const EventDetail = ({ event }) => {
           </a>
         </section>
         <span>
-          {event.date} at {event.time}
+          {new Date(event.date).toLocaleDateString("hi")} at {event.time}
         </span>
         <h1>{event.name}</h1>
-        {event.image && <Image src={event.image} height={700} width={1000} />}
+        {event.image && (
+          <Image
+            src={event.image.formats.medium.url}
+            height={700}
+            width={1000}
+          />
+        )}
         <h3>Performers:</h3>
         <p>{event.performers}</p>
         <h3>Venue: {event.venue}</h3>
@@ -44,18 +50,18 @@ const EventDetail = ({ event }) => {
 export default EventDetail;
 
 export async function getStaticPaths() {
-  const response = await config.get("/api/events");
+  const response = await config.get("/events?_sort=date:ASC");
   const paths = response.data.map((event) => {
     return { params: { slug: event.slug } };
   });
   return {
     paths,
-    fallback: true,
+    fallback: false,
   };
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const response = await config.get(`/api/events/${slug}`);
+  const response = await config.get(`/events/`, { params: { slug } });
   return {
     props: {
       event: response.data[0],
