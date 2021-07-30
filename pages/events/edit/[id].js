@@ -1,21 +1,30 @@
 import { useState } from "react";
-import { useRouter } from "next/router";
-import styles from "@/style/Form.module.css";
-import Link from "next/link";
-import config from "@/config/index";
+import { FaImage } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import Image from "next/image";
 import Layout from "@/components/layout";
-const AddEvent = () => {
+import config from "@/config/index";
+import styles from "@/style/Form.module.css";
+import Modal from "@/components/modal";
+import ImageUpload from "@/components/imageUpload";
+
+const EditPage = ({ event }) => {
   const [values, setValues] = useState({
-    name: "",
-    description: "",
-    venue: "",
-    address: "",
-    date: "",
-    time: "",
-    performers: "",
+    name: event.name,
+    description: event.description,
+    venue: event.venue,
+    address: event.address,
+    date: event.date.split("T")[0],
+    time: event.time,
+    performers: event.performers,
   });
+  const [show, setShow] = useState(false);
+  const [imagePreview, setImagePreview] = useState(
+    (event.image && event.image.formats.thumbnail.url) || null
+  );
   const router = useRouter();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,21 +37,26 @@ const AddEvent = () => {
       "Content-Type": "application/json",
     };
     try {
-      const res = await config.post("/events", values, headers);
+      const res = await config.put(`/events/${event.id}`, values, headers);
       router.push(`/events/${res.data.slug}`);
     } catch (e) {
       toast.error(e);
     }
   };
+  const handleUpload = async () => {
+    const { data } = await config.get(`/events/${event.id}`);
+    setImagePreview(data.image.formats.thumbnail.url);
+    setShow(false);
+  };
   const handleInputChange = ({ target: { name, value } }) => {
     setValues({ ...values, [name]: value });
   };
   return (
-    <Layout title="Add DJ Event">
+    <Layout title="Edit DJ Event">
       <Link href="/">
         <a>{"<"} Go back</a>
       </Link>
-      <h1>Add Event</h1>
+      <h1>Edit Event</h1>
       <ToastContainer />
       <form onSubmit={handleSubmit} className={styles.form}>
         <section className={styles.grid}>
@@ -117,10 +131,36 @@ const AddEvent = () => {
             onChange={handleInputChange}
           ></textarea>
         </section>
-        <input type="submit" value="Add Event" className="btn" />
+        <input type="submit" value="Edit Event" className="btn" />
       </form>
+      <h2>Image Preview</h2>
+      {(imagePreview && (
+        <Image src={imagePreview} height={100} width={170} />
+      )) || (
+        <section>
+          <h3>No Image Uploaded</h3>
+        </section>
+      )}
+      <section>
+        <button className="btn-secondary" onClick={() => setShow(true)}>
+          <FaImage /> Upload Image
+        </button>
+        <Modal show={show} onClose={() => setShow(false)}>
+          <ImageUpload event={event} onUpload={handleUpload} />
+        </Modal>
+      </section>
     </Layout>
   );
 };
 
-export default AddEvent;
+export default EditPage;
+
+export async function getServerSideProps({ params: { id } }) {
+  const response = await config.get(`/events/${id}`);
+  const event = response.data;
+  return {
+    props: {
+      event,
+    },
+  };
+}

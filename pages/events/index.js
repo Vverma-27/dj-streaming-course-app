@@ -1,26 +1,31 @@
 import Layout from "@/components/layout";
-import config from "@/config/index";
+import config, { PER_PAGE } from "@/config/index";
 import EventList from "@/components/eventList";
-// import axios from "axios";
-const MyEvents = ({ events }) => {
-  console.log(events);
+import Pagination from "@/components/pagination";
+const MyEvents = ({ events, total, page }) => {
   return (
     <Layout>
       <h1>Events</h1>
       {events.length === 0 && <h3>No Events lined up</h3>}
       {<EventList events={events} />}
+      <Pagination total={total} page={+page} />
     </Layout>
   );
 };
 
 export default MyEvents;
 
-export async function getStaticProps() {
-  const response = await config.get("/events?_sort=date:ASC");
+export async function getServerSideProps({ query: { page = 1 } }) {
+  const start = (page - 1) * PER_PAGE;
+  const { data: events } = await config.get(
+    `/events?_sort=date:ASC&_limit=${PER_PAGE}&_start=${start}`
+  );
+  const { data: total } = await config.get("/events/count");
   return {
     props: {
-      events: response.data,
-      revalidate: 1,
+      events,
+      total,
+      page,
     },
   };
 }

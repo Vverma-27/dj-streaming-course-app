@@ -8,7 +8,8 @@ const EventList = ({ events }) => {
         <section className={styles.img}>
           <Image
             src={
-              event.image.formats.thumbnail.url || "/images/event-default.png"
+              (event.image && event.image.formats.thumbnail.url) ||
+              "/images/event-default.png"
             }
             width={170}
             height={100}

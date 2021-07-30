@@ -4,3 +4,4 @@ const url = process.env.NEXT_PUBLIC_API_URL || "localhost:1337";
 export default axios.create({
   baseURL: `http://${url}`,
 });
+export const PER_PAGE = 5;
