@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/layout";
-import config from "@/config/index";
+import { strapi } from "@/config/index";
 import styles from "@/style/Form.module.css";
 import Modal from "@/components/modal";
 import ImageUpload from "@/components/imageUpload";
@@ -156,7 +156,7 @@ const EditPage = ({ event }) => {
 export default EditPage;
 
 export async function getServerSideProps({ params: { id } }) {
-  const response = await config.get(`/events/${id}`);
+  const response = await strapi.get(`/events/${id}`);
   const event = response.data;
   return {
     props: {

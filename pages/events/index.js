@@ -1,5 +1,5 @@
 import Layout from "@/components/layout";
-import config, { PER_PAGE } from "@/config/index";
+import { strapi, PER_PAGE } from "@/config/index";
 import EventList from "@/components/eventList";
 import Pagination from "@/components/pagination";
 const MyEvents = ({ events, total, page }) => {
@@ -17,10 +17,10 @@ export default MyEvents;
 
 export async function getServerSideProps({ query: { page = 1 } }) {
   const start = (page - 1) * PER_PAGE;
-  const { data: events } = await config.get(
+  const { data: events } = await strapi.get(
     `/events?_sort=date:ASC&_limit=${PER_PAGE}&_start=${start}`
   );
-  const { data: total } = await config.get("/events/count");
+  const { data: total } = await strapi.get("/events/count");
   return {
     props: {
       events,

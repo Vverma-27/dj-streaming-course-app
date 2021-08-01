@@ -5,13 +5,13 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/layout";
-import config from "@/config/index";
+import { strapi } from "@/config/index";
 import styles from "@/style/Event.module.css";
 const EventDetail = ({ event }) => {
   const router = useRouter();
   const eventDelete = async () => {
     try {
-      const res = await config.delete(`/events/${event.id}`);
+      const res = await strapi.delete(`/events/${event.id}`);
       console.log(res.data);
       router.push(`/`);
     } catch (e) {
@@ -60,7 +60,7 @@ const EventDetail = ({ event }) => {
 export default EventDetail;
 
 export async function getStaticPaths() {
-  const response = await config.get("/events?_sort=date:ASC");
+  const response = await strapi.get("/events?_sort=date:ASC");
   const paths = response.data.map(({ slug }) => {
     return { params: { slug } };
   });
@@ -71,7 +71,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const response = await config.get(`/events/`, { params: { slug } });
+  const response = await strapi.get(`/events/`, { params: { slug } });
   return {
     props: {
       event: response.data[0],

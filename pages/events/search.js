@@ -2,7 +2,7 @@ import { stringify } from "qs";
 import { useRouter } from "next/router";
 import Link from "next/Link";
 import Layout from "@/components/layout";
-import config from "@/config/index";
+import { strapi } from "@/config/index";
 import EventList from "@/components/eventList";
 const SearchPage = ({ events }) => {
   const {
@@ -33,7 +33,7 @@ export async function getServerSideProps({ query: { term } }) {
       ],
     },
   });
-  const response = await config.get(`/events?${query}`);
+  const response = await strapi.get(`/events?${query}`);
   return {
     props: {
       events: response.data,

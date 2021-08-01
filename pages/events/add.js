@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import styles from "@/style/Form.module.css";
-import Link from "next/link";
-import config from "@/config/index";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import styles from "@/style/Form.module.css";
+import Link from "next/link";
+import { strapi } from "@/config/index";
 import Layout from "@/components/layout";
 const AddEvent = () => {
   const [values, setValues] = useState({
@@ -28,7 +28,7 @@ const AddEvent = () => {
       "Content-Type": "application/json",
     };
     try {
-      const res = await config.post("/events", values, headers);
+      const res = await strapi.post("/events", values, headers);
       router.push(`/events/${res.data.slug}`);
     } catch (e) {
       toast.error(e);

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Layout from "@/components/layout";
-import config from "@/config/index";
+import { strapi } from "@/config/index";
 import EventList from "@/components/eventList";
 const HomePage = ({ events }) => {
   return (
@@ -20,7 +20,7 @@ const HomePage = ({ events }) => {
 export default HomePage;
 
 export async function getStaticProps() {
-  const response = await config.get("/events?_sort=date:ASC&_limit=3");
+  const response = await strapi.get("/events?_sort=date:ASC&_limit=3");
   return {
     props: {
       events: response.data,
