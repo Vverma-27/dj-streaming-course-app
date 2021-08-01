@@ -57,17 +57,18 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     router.push("/");
   };
-  const isSignedIn = async (user) => {
+  const isSignedIn = async () => {
     try {
       const { data: user } = await authentication.get("/user");
       // console.log(res.data);
       setUser(user);
     } catch ({
       response: {
-        data: { error },
+        data: { message },
       },
     }) {
-      setError(error);
+      // setError(message);
+      // console.log(response);
       setUser(null);
     }
   };
